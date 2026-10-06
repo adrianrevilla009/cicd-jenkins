@@ -1,0 +1,31 @@
+// Declarative pipeline for the shared Orders service (Java 21, Maven).
+pipeline {
+  agent { docker { image 'maven:3.9.9-eclipse-temurin-21' } }
+  options {
+    timeout(time: 15, unit: 'MINUTES')
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+    disableConcurrentBuilds()
+    timestamps()
+  }
+  environment {
+    MAVEN_OPTS = '-Dmaven.repo.local=.m2'
+  }
+  stages {
+    stage('Build') {
+      steps { sh 'mvn -B -q -DskipTests package' }
+    }
+    stage('Test') {
+      steps { sh 'mvn -B test' }
+      post { always { junit 'target/surefire-reports/*.xml' } }
+    }
+    stage('Deploy') {
+      when { branch 'main' }
+      input { message 'Deploy orders to staging?' }
+      steps { echo 'deploying orders-service (placeholder step)' }
+    }
+  }
+  post {
+    failure { echo 'build failed' }
+    cleanup { cleanWs() }
+  }
+}

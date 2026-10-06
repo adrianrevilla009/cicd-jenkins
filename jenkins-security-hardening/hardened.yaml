@@ -1,0 +1,37 @@
+jenkins:
+  numExecutors: 0
+  disableRememberMe: true
+  securityRealm:
+    local:
+      allowsSignup: false
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - name: "admin"
+            permissions: ["Overall/Administer"]
+            entries: [{ user: "admin" }]
+          - name: "dev"
+            permissions: ["Overall/Read", "Job/Build", "Job/Read"]
+            entries: [{ group: "developers" }]
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  remotingSecurity:
+    enabled: true
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: false
+  queueItemAuthenticator:
+    authenticators:
+      - global:
+          strategy: "triggeringUsersAuthorizationStrategy"
+  scriptApproval:
+    approvedSignatures: []
+  sSHD:
+    port: -1
+unclassified:
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: true

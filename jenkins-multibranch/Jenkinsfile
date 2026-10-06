@@ -1,0 +1,18 @@
+// Branch-aware pipeline: every branch builds, only main deploys, PRs get a fast path.
+pipeline {
+  agent { docker { image 'maven:3.9.9-eclipse-temurin-21' } }
+  options { timeout(time: 15, unit: 'MINUTES') }
+  stages {
+    stage('Test') {
+      steps { sh 'mvn -B test' }
+    }
+    stage('Integration') {
+      when { not { changeRequest() } }
+      steps { sh 'mvn -B verify' }
+    }
+    stage('Deploy') {
+      when { branch 'main' }
+      steps { echo "deploy ${env.BRANCH_NAME} build ${env.BUILD_NUMBER} (placeholder)" }
+    }
+  }
+}

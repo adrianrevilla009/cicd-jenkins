@@ -1,0 +1,10 @@
+jenkins:
+  clouds:
+    - kubernetes:
+        name: "kind"
+        namespace: "jenkins-agents"
+        jenkinsUrl: "http://jenkins.jenkins.svc.cluster.local:8080"
+        jenkinsTunnel: "jenkins-agent.jenkins.svc.cluster.local:50000"
+        credentialsId: "k8s-sa-token"
+        containerCapStr: "5"
+        retentionTimeout: 5

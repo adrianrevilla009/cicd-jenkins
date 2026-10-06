@@ -1,0 +1,15 @@
+// Ephemeral Kubernetes agent: one pod per build, destroyed afterwards.
+pipeline {
+  agent {
+    kubernetes {
+      yamlFile 'pod-template.yaml'
+      defaultContainer 'maven'
+    }
+  }
+  options { timeout(time: 15, unit: 'MINUTES') }
+  stages {
+    stage('Test') {
+      steps { sh 'mvn -B test' }
+    }
+  }
+}

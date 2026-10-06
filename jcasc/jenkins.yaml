@@ -1,0 +1,37 @@
+jenkins:
+  systemMessage: "Orders CI - configured by JCasC, do not edit in the UI"
+  numExecutors: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+  globalLibraries:
+    libraries:
+      - name: "orders-lib"
+        defaultVersion: "main"
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                remote: "https://example.invalid/orders-lib.git"
+jobs:
+  - script: >
+      pipelineJob('orders-ci') {
+        definition {
+          cps {
+            script("pipeline { agent any; stages { stage('hi') { steps { echo 'hello' } } } }")
+            sandbox()
+          }
+        }
+      }

@@ -1,0 +1,4 @@
+// Consumer: load the library by name (configured in the controller, see ../jcasc).
+@Library('orders-lib@main') _
+
+mavenBuild(goals: 'verify')
